@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/")
+//@RequestMapping("/")
 public class UserController {
     private final UserService userService;
 
@@ -45,7 +45,7 @@ public class UserController {
         return "userinfo";
     }
 
-    @GetMapping(value = "/get/all")
+    @GetMapping(value = "/")
     public String getUsers(ModelMap model) {
         System.out.println("QQQ getUsers");
         List<User> users = userService.getUsers();
