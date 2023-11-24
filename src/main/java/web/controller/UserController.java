@@ -4,7 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import web.model.User;
 import web.service.UserService;
@@ -13,7 +12,6 @@ import java.util.List;
 
 
 @Controller
-//@RequestMapping("/")
 public class UserController {
     private final UserService userService;
 
@@ -23,11 +21,10 @@ public class UserController {
 
     @PostMapping(value = "/create")
     public String createUser(@RequestParam(value = "firstname") String firstName,
-                          @RequestParam(value = "lastname") String lastName,
-                          @RequestParam(value = "email") String email,
-                          @RequestParam(value = "age") Integer age,
-                          ModelMap model) {
-        System.out.println("QQQ createUser" + firstName + " " + lastName + " " + email + " " + age);
+                             @RequestParam(value = "lastname") String lastName,
+                             @RequestParam(value = "email") String email,
+                             @RequestParam(value = "age") Integer age,
+                             ModelMap model) {
         userService.createUser(new User(firstName, lastName, email, age));
         model.addAttribute("firstname", firstName);
         model.addAttribute("lastname", lastName);
@@ -36,21 +33,24 @@ public class UserController {
 
     @GetMapping(value = "/get")
     public String getUserById(@RequestParam(value = "id") Integer id, ModelMap model) {
-        System.out.println("QQQ getUserById" + id);
         User user = userService.getUser(id);
-        if (user == null){
+        if (user == null) {
             return "notfound";
         }
         model.addAttribute("user", user);
         return "userinfo";
     }
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "/getall")
     public String getUsers(ModelMap model) {
-        System.out.println("QQQ getUsers");
         List<User> users = userService.getUsers();
         model.addAttribute("users", users);
         return "allusersinfo";
+    }
+
+    @GetMapping(value = "/")
+    public String home() {
+        return "forward:/getall";
     }
 
     @PostMapping(value = "/update")
@@ -59,9 +59,8 @@ public class UserController {
                              @RequestParam(value = "lastname") String lastName,
                              @RequestParam(value = "email") String email,
                              @RequestParam(value = "age") Integer age) {
-        System.out.println("QQQ update" + id);
         User user = userService.getUser(id);
-        if (user == null){
+        if (user == null) {
             return "notfound";
         }
         user.setFirstName(firstName);
@@ -73,13 +72,12 @@ public class UserController {
     }
 
     @PostMapping(value = "/delete")
-    public String deleteUser(@RequestParam(value = "id") Integer id, ModelMap model) {
-        System.out.println("QQQ deleteUser" + id);
+    public String deleteUser(@RequestParam(value = "id") Integer id) {
         User user = userService.getUser(id);
-        if (user == null){
+        if (user == null) {
             return "notfound";
         }
         userService.deleteUser(user);
-        return "userinfo";
+        return "userdeleted";
     }
 }
